@@ -11,7 +11,7 @@ export function DashboardNav() {
 
   const navigation = [
     { name: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
-    { name: "Monitoring", href: "/", icon: Activity },
+    { name: "Monitoring", href: "/monitoring", icon: Activity }, // Updated path here
     { name: "Settings", href: "/settings", icon: Settings },
   ];
 

@@ -15,15 +15,16 @@ export interface MonitoredWebsite {
   interval: number;
 }
 
-interface WebsiteMonitoringContextType {
+export type WebsiteMonitoringContextType = {
   websites: MonitoredWebsite[];
-  addWebsite: (url: string, notificationEmail: string, interval: number) => Promise<void>;
-  deleteWebsite: (id: string) => Promise<void>;
-  checkWebsite: (id: string) => void;
-  checkAllWebsites: () => void;
   emailNotifications: boolean;
   setEmailNotifications: (enabled: boolean) => void;
-}
+  addWebsite: (url: string, notificationEmail: string, interval: number) => Promise<void>;
+  deleteWebsite: (id: string) => Promise<void>;
+  loadWebsites: () => Promise<void>;
+  checkWebsite: (id: string) => Promise<void>;
+  checkAllWebsites: () => void;
+};
 
 const WebsiteMonitoringContext = createContext<WebsiteMonitoringContextType | undefined>(undefined);
 
@@ -39,30 +40,6 @@ export function WebsiteMonitoringProvider({ children }: { children: React.ReactN
   useEffect(() => {
     console.log("Websites state updated:", websites);
   }, [websites]); 
-
-
-  // const loadWebsites = async () => {
-  //   try {
-  //     const data = await monitorsApi.getAll();
-  //     console.log(data)
-      
-  //     setWebsites(data.map((monitor: any) => ({
-  //       id: monitor.id,
-  //       url: monitor.url,
-  //       status: monitor.pingResults[0].isUp ? "UP" : "DOWN",
-  //       lastChecked: new Date(monitor.lastPingedAt),
-  //       notificationEmail: monitor.notificationEmail,
-  //       interval: monitor.interval
-  //     })));
-      
-  //   } catch (error) {
-  //     toast({
-  //       title: "Error",
-  //       description: "Failed to load monitors",
-  //       variant: "destructive",
-  //     });
-  //   }
-  // };
 
 
   const loadWebsites = async () => {
@@ -174,18 +151,19 @@ export function WebsiteMonitoringProvider({ children }: { children: React.ReactN
     websites.forEach(website => checkWebsite(website.id));
   };
 
+  const contextValue = {
+    websites,
+    emailNotifications,
+    setEmailNotifications,
+    addWebsite,
+    deleteWebsite,
+    loadWebsites,
+    checkWebsite,
+    checkAllWebsites,
+  };
+
   return (
-    <WebsiteMonitoringContext.Provider
-      value={{
-        websites,
-        addWebsite,
-        deleteWebsite,
-        checkWebsite,
-        checkAllWebsites,
-        emailNotifications,
-        setEmailNotifications
-      }}
-    >
+    <WebsiteMonitoringContext.Provider value={contextValue}>
       {children}
     </WebsiteMonitoringContext.Provider>
   );
