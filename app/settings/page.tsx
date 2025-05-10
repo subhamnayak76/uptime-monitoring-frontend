@@ -17,9 +17,17 @@ import {
 import { LogOut, Mail } from "lucide-react";
 import { useWebsiteMonitoring } from "@/components/website-monitoring-provider";
 import { WebsiteMonitoringProvider } from "@/components/website-monitoring-provider";
+import { useRouter } from "next/navigation";
+import { authApi } from "@/lib/api";
 
 function SettingsContent() {
   const { emailNotifications, setEmailNotifications } = useWebsiteMonitoring();
+  const router = useRouter();
+
+  const handleSignOut = async () => {
+    await authApi.logout();
+    router.push("/login");
+  };
 
   return (
     <main className="container mx-auto px-4 py-8">
@@ -86,7 +94,7 @@ function SettingsContent() {
                     </AlertDialogHeader>
                     <AlertDialogFooter>
                       <AlertDialogCancel>Cancel</AlertDialogCancel>
-                      <AlertDialogAction>Sign Out</AlertDialogAction>
+                      <AlertDialogAction onClick={handleSignOut}>Sign Out</AlertDialogAction>
                     </AlertDialogFooter>
                   </AlertDialogContent>
                 </AlertDialog>

@@ -22,9 +22,8 @@ export default function LoginPage() {
     setIsLoading(true);
 
     try {
-      const { accessToken } = await authApi.login(email, password);
-      console.log(accessToken)
-      localStorage.setItem('accessToken', accessToken);
+      const data = await authApi.login(email, password);
+      
       router.push("/dashboard");
     } catch (error) {
       toast({
